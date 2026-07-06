@@ -78,15 +78,27 @@ except (KeyError, TypeError, ValueError):
     pass
 
 # 6. Session duration — dim
-tp = d.get("transcript_path", "")
-if tp:
-    try:
-        ct = datetime.fromtimestamp(Path(tp).stat().st_ctime)
-        tm = int((datetime.now() - ct).total_seconds() / 60)
-        ds = f"{tm // 60}h {tm % 60:02d}m" if tm >= 60 else f"{tm}m"
-        parts.append(f"{DIM}{ds}{R}")
-    except Exception:
-        pass
+tm = None
+try:
+    tm = int(float(d["cost"]["total_duration_ms"]) / 60000)
+except (KeyError, TypeError, ValueError):
+    pass
+if tm is None:
+    # Fallback for older Claude Code versions without cost.total_duration_ms.
+    # st_birthtime (true creation time on macOS/APFS) is used instead of
+    # st_ctime, which bumps on every append to the transcript and would
+    # always read close to zero.
+    tp = d.get("transcript_path", "")
+    if tp:
+        try:
+            st = Path(tp).stat()
+            ct = datetime.fromtimestamp(getattr(st, "st_birthtime", st.st_ctime))
+            tm = int((datetime.now() - ct).total_seconds() / 60)
+        except Exception:
+            pass
+if tm is not None:
+    ds = f"{tm // 60}h {tm % 60:02d}m" if tm >= 60 else f"{tm}m"
+    parts.append(f"{DIM}{ds}{R}")
 
 # 7. Folder basename — bold cyan
 fn = Path(cwd).name if cwd else "~"
