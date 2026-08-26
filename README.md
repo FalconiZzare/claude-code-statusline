@@ -15,7 +15,7 @@
 A lightweight Python script that powers a live status bar at the bottom of every Claude Code session — showing your model, context usage, git branch, rate limits, session duration, and current folder.
 
 ```
-claude-sonnet-4-6  |  [▓▓▓░░░░░░░░░░░░░░░░░] 15%  |   main  |  5h:12%  |  7d:4%  |  42m  |  my-project
+claude-fable-5  |  [▓▓▓░░░░░░░░░░░░░░░░░] 15%  |   main  |  5h:12%  |  7d:4%  |  Fable:38%  |  42m  |  my-project
 ```
 
 ---
@@ -29,6 +29,7 @@ claude-sonnet-4-6  |  [▓▓▓░░░░░░░░░░░░░░░░
 | **Git branch** | Current branch (or short commit hash if detached HEAD) |
 | **5h limit** | Five-hour rolling rate limit usage |
 | **7d limit** | Seven-day rolling rate limit usage |
+| **Model limit** | Model-scoped weekly limit (e.g. Fable 5 or Opus), shown only if your plan has one. Claude Code does not pass this to statusline scripts yet, so it is read from the local usage cache in `~/.claude.json` |
 | **Session age** | Wall-clock time elapsed since the session started |
 | **Folder** | Basename of the current working directory |
 

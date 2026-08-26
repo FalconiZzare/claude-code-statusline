@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import sys, json, subprocess
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 sys.stdout.reconfigure(encoding='utf-8')
 sys.stdin.reconfigure(encoding='utf-8')
 
@@ -14,6 +14,7 @@ YLB  = e("1;33")  # bold yellow  — model
 YL   = e(33)       # yellow       — separators, brackets, context %, 5h
 GR   = e(32)       # green        — bar filled, 7d
 CYB  = e("1;36")  # bold cyan    — branch + folder
+MG   = e(35)       # magenta      — model-scoped weekly limit (Fable 5 / Opus)
 
 SEP = f"{DIM} | {R}"
 
@@ -77,7 +78,31 @@ try:
 except (KeyError, TypeError, ValueError):
     pass
 
-# 6. Session duration — dim
+# 6. Model-scoped weekly limit (Fable 5 / Opus) — magenta
+# Claude Code does not forward model-scoped limits in the statusline stdin
+# payload (only five_hour and seven_day), but it caches the full usage
+# response in ~/.claude.json under cachedUsageUtilization. Entries whose
+# resets_at has already passed are skipped as stale.
+try:
+    cache = json.loads((Path.home() / ".claude.json").read_text(encoding="utf-8"))
+    limits = ((cache.get("cachedUsageUtilization") or {}).get("utilization") or {}).get("limits") or []
+    now = datetime.now(timezone.utc)
+    for lim in limits:
+        if lim.get("kind") != "weekly_scoped":
+            continue
+        ra = lim.get("resets_at")
+        if ra:
+            try:
+                if datetime.fromisoformat(ra) < now:
+                    continue
+            except ValueError:
+                pass
+        name = ((lim.get("scope") or {}).get("model") or {}).get("display_name") or "model"
+        parts.append(f"{MG}{name}:{round(float(lim['percent']))}%{R}")
+except Exception:
+    pass
+
+# 7. Session duration — dim
 tp = d.get("transcript_path", "")
 if tp:
     try:
@@ -88,7 +113,7 @@ if tp:
     except Exception:
         pass
 
-# 7. Folder basename — bold cyan
+# 8. Folder basename — bold cyan
 fn = Path(cwd).name if cwd else "~"
 parts.append(f"{CYB}{fn}{R}")
 
