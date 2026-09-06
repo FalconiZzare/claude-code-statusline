@@ -29,7 +29,7 @@ claude-fable-5  |  [▓▓▓░░░░░░░░░░░░░░░░░
 | **Git branch** | Current branch (or short commit hash if detached HEAD) |
 | **5h limit** | Five-hour rolling rate limit usage |
 | **7d limit** | Seven-day rolling rate limit usage |
-| **Model limit** | Model-scoped weekly limit (e.g. Fable 5 or Opus), shown only if your plan has one. Claude Code does not pass this to statusline scripts yet, so it is read from the local usage cache in `~/.claude.json` |
+| **Model limit** | Model-scoped weekly limit (e.g. Fable 5 or Opus), shown only if your plan has one. Claude Code does not pass this to statusline scripts, so the script fetches it from the same usage endpoint Claude Code uses for `/usage` (with your existing login, read from the macOS keychain or `~/.claude/.credentials.json`), caches it in `~/.claude/statusline-usage.json`, and refreshes it every 5 minutes in a detached background process so the status line never blocks. The segment dims if the cache is older than 30 minutes |
 | **Session age** | Wall-clock time elapsed since the session started |
 | **Folder** | Basename of the current working directory |
 
