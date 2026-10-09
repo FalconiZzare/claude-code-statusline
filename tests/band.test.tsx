@@ -50,10 +50,11 @@ test('under the prompt: one row when it fits, more when narrow, the hint kept', 
       plugin: 'usage-statusline', surface, component: 'PromptHint', props: HINT, viewport: viewport(300),
     })
     expect(await wide.find({ type: 'Text', text: '? for shortcuts' })).toBeDefined()
-    expect(await wide.find({ type: 'Text', text: /\[▓░{9}\] 12% 46K\/400K/ })).toBeDefined()
+    expect(await wide.find({ type: 'Text', text: /\[▓░{9}\] 12%/ })).toBeDefined()
+    expect(await wide.find({ type: 'Text', text: /400K/ })).toBeUndefined()
     expect(await wide.find({ type: 'Text', text: '5H 3%' })).toBeDefined()
-    expect(await wide.find({ type: 'Text', text: 'WEEK 62%' })).toBeDefined()
-    expect(await wide.find({ type: 'Text', text: '○ CACHE COLD' })).toBeDefined()
+    expect(await wide.find({ type: 'Text', text: '7D 62%' })).toBeDefined()
+    expect(await wide.find({ type: 'Text', text: '○' })).toBeDefined()
     expect(await wide.find({ key: 'row-1' })).toBeUndefined()
     await wide.unmount()
 

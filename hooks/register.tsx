@@ -10,7 +10,6 @@ import {
   duration,
   modelName,
   rewriteUsd,
-  tokens,
   ttlMs,
   usd,
 } from './format'
@@ -196,15 +195,12 @@ export const register: Register = (on, options) => {
         { text: empty, dim: true },
         { text: ']', color },
         { text: ` ${Math.round(percent)}%`, color: 'gray' },
-        { text: ` ${tokens(ctx)}/${tokens(u.window)}`, dim: true },
       ])
     }
 
-    if (s?.branch) segments.push([{ text: s.branch, color: 'green' }])
-
     const windows: [string, string, string, string][] = [
       ['five_hour', 'session', '5H', 'yellow'],
-      ['seven_day', 'weekly_all', 'WEEK', 'green'],
+      ['seven_day', 'weekly_all', '7D', 'green'],
     ]
     for (const [kind, accountKind, label, color] of windows) {
       const percent = u.limits.find(l => l.kind === kind)?.percentUsed
@@ -222,21 +218,22 @@ export const register: Register = (on, options) => {
     if (s) {
       segments.push([{ text: duration(at - s.startedAt), dim: true }])
       segments.push([{ text: s.folder, color: 'cyan', bold: true }])
+      if (s.branch) segments.push([{ text: s.branch, color: 'green' }])
     }
 
     const remaining = mark ? mark.at + ttl - at : 0
     segments.push(
       remaining > 0
-        ? [{ text: `● CACHE WARM ${countdown(remaining)}`, color: cacheTone(remaining, ttl) }]
-        : [{ text: '○ CACHE COLD', dim: true }],
+        ? [{ text: `● ${countdown(remaining)}`, color: cacheTone(remaining, ttl) }]
+        : [{ text: '○', dim: true }],
     )
 
     if (ctx !== null) {
       const cost = rewriteUsd(ctx, mark?.model ?? s?.model ?? '', ttl)
       if (cost !== null) {
         segments.push([remaining > 0
-          ? { text: `REWRITE ≈ ${usd(cost)}`, dim: true }
-          : { text: `REWRITE ≈ ${usd(cost)}`, color: 'warning' }])
+          ? { text: `≈${usd(cost)}`, dim: true }
+          : { text: `≈${usd(cost)}`, color: 'warning' }])
       }
     }
 
