@@ -133,17 +133,6 @@ export const register: Register = (on, options) => {
     return result
   })
 
-  // A resumed session's cache may still be warm from before it was closed.
-  on('classic.SessionStart', async ($, e, next) => {
-    const seconds = e.seconds_since_last_response
-    if (typeof seconds === 'number') {
-      const at = (await $.clock.now()) - seconds * 1000
-      const model = e.model ?? (await $.session.model())
-      await update($, cache, () => ({ at, model, tokens: e.context_tokens ?? 0 }))
-    }
-    return next(e)
-  })
-
   on('session.end', async ($, e, next) => {
     if (e.reason === 'clear') {
       await update($, cache, () => null)

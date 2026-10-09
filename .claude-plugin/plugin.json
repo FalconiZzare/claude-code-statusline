@@ -1,6 +1,6 @@
 {
   "name": "usage-statusline",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Live usage line under the prompt: model, context, branch, 5h/week/model limits, session time, folder, cache countdown and rewrite cost.",
   "author": { "name": "Octopi AI" },
   "types": "./types/index.d.ts",
