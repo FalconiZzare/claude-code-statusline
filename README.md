@@ -12,10 +12,10 @@
 
 </div>
 
-A Claude Code mod that draws a live usage line under the prompt: your model, context usage, git branch, rate limits, session time and folder, plus how long the prompt cache stays warm and what re-caching would cost. The same on macOS, Windows and Linux, in the terminal and the desktop app. No Python, no scripts, no settings to edit.
+A Claude Code mod that draws a live usage line under the prompt: your model, context usage, rate limits, session time, folder and git branch, plus how long the prompt cache stays warm and what re-caching would cost. The same on macOS, Windows and Linux, in the terminal and the desktop app. No Python, no scripts, no settings to edit.
 
 ```
-OPUS 5.5 │ [▓░░░░░░░░░] 12% 46K/400K │ main │ 5H 3% │ WEEK 62% │ FABLE 38% │ 42M │ my-project │ ● CACHE WARM 58M │ REWRITE ≈ $0.69
+OPUS 5.5 │ [▓░░░░░░░░░] 12% │ 5H 3% │ 7D 62% │ FABLE 38% │ 42M │ my-project │ main │ ● 58M │ ≈$0.69
 ```
 
 One row when the terminal is wide enough; a narrower one breaks onto more rows between segments.
@@ -51,13 +51,13 @@ You'll see `Installed usage-statusline. Plugin is now active.` and the line appe
 | Segment | Description |
 |---|---|
 | **Model** | Active model, e.g. `OPUS 5.5` |
-| **Context** | Fill bar, percentage and tokens of the context window; red from 80% |
-| **Branch** | Current git branch (or short commit hash on a detached HEAD) |
-| **5h / Week** | Rate-limit windows; red from 80% |
+| **Context** | Fill bar and percentage of the context window; red from 80% |
+| **5H / 7D** | Rate-limit windows; red from 80% |
 | **Model weekly** | A model's own weekly limit (e.g. Fable), shown only if your plan has one. Claude Code doesn't hand it to mods, so the mod reads it from the same usage endpoint `/usage` uses, with your existing login, every 5 minutes. Dims when the reading is older than 30 minutes |
 | **Session** | Time since the session started |
 | **Folder** | Current folder |
-| **Cache** | Time left before the prompt cache goes cold: green, amber under half, red in the last 20%, `○ CACHE COLD` once it has expired |
+| **Branch** | Current git branch (or short commit hash on a detached HEAD) |
+| **Cache** | Time left before the prompt cache goes cold: green, amber under half, red in the last 20%, a hollow `○` once it has expired |
 | **Rewrite** | What re-caching the current context would cost at the model's list cache-write price (1.25x input on a 5m cache, 2x on a 1h cache); amber once the cache is cold, since that is when the next prompt pays it |
 
 The cache TTL is 1h on a Claude subscription and 5m otherwise; override it with the `cacheTtl` option in `/config`.
