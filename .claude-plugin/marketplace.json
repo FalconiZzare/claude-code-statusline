@@ -1,0 +1,6 @@
+{
+  "name": "octopi-statusline",
+  "owner": { "name": "Octopi AI" },
+  "description": "Octopi's Claude Code usage status line, as a mod.",
+  "plugins": [{ "name": "usage-statusline", "source": "./" }]
+}
