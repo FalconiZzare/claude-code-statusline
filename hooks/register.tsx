@@ -253,7 +253,7 @@ export const register: Register = (on, options) => {
 
     const { Box, Text } = $.ui.resolve(e)
     return (
-      <Box flexDirection="column">
+      <Box flexDirection="column" marginTop={1}>
         {rows(segments, (e.viewport?.columns ?? DEFAULT_COLUMNS) - GUTTER).map((row, r) => (
           <Box key={`row-${r}`}>
             <Text wrap="truncate-end">
